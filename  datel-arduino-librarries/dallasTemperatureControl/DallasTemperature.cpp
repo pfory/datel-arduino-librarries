@@ -398,8 +398,8 @@ bool DallasTemperature::requestTemperaturesByIndex(uint8_t deviceIndex)
 float DallasTemperature::getTempCByIndex(uint8_t deviceIndex)
 {
   DeviceAddress deviceAddress;
-  getAddress(deviceAddress, deviceIndex);
-  return getTempC((uint8_t*)deviceAddress);
+  if (getAddress(deviceAddress, deviceIndex)) return getTempC((uint8_t*)deviceAddress);
+  return -127;
 }
 
 // Fetch temperature for device index
