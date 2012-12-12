@@ -35,8 +35,8 @@ struct pin_map_t {
 // Mega
 
 // Two Wire (aka I2C) ports
-uint8_t const SDA_PIN = 20;
-uint8_t const SCL_PIN = 21;
+//uint8_t const SDA_PIN = 20;
+//uint8_t const SCL_PIN = 21;
 
 // SPI port
 uint8_t const SS_PIN = 53;
