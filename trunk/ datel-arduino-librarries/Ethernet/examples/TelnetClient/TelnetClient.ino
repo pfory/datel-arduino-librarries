@@ -1,94 +1,93 @@
-//#include <SPI.h>
+/*
+  Telnet client
+ 
+ This sketch connects to a a telnet server (http://www.google.com)
+ using an Arduino Wiznet Ethernet shield.  You'll need a telnet server 
+ to test this with.
+ Processing's ChatServer example (part of the network library) works well, 
+ running on port 10002. It can be found as part of the examples
+ in the Processing application, available at 
+ http://processing.org/
+ 
+ Circuit:
+ * Ethernet shield attached to pins 10, 11, 12, 13
+ 
+ created 14 Sep 2010
+ modified 9 Apr 2012
+ by Tom Igoe
+ 
+ */
 
-
+#include <SPI.h>
 #include <Ethernet.h>
 
-byte mac[] = { 0x90, 0xA2, 0xDA, 0x00, 0x28, 0x67 }; //mac address of arduino
-byte server[]    = { 192, 168, 1, 2}; //
-int time = 1000;
-int wait = 0;
-int port = 25;
+// Enter a MAC address and IP address for your controller below.
+// The IP address will be dependent on your local network:
+byte mac[] = {  
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress ip(192,168,1,177);
 
+// Enter the IP address of the server you're connecting to:
+IPAddress server(1,1,1,1); 
+
+// Initialize the Ethernet client library
+// with the IP address and port of the server 
+// that you want to connect to (port 23 is default for telnet;
+// if you're using Processing's ChatServer, use  port 10002):
 EthernetClient client;
 
-void setup()
-{
- delay(time);
- 
- Ethernet.begin(mac);
- Serial.begin(9600);
- 
- Serial.print("\nIP:");
-  Serial.println(Ethernet.localIP());
-  Serial.print("Mask:");
-  Serial.println(Ethernet.subnetMask());
-  Serial.print("Gateway:");
-  Serial.println(Ethernet.gatewayIP());
-  Serial.print("DNS:");
-  Serial.println(Ethernet.dnsServerIP());
-  Serial.println();
- 
- delay(time);
- 
- Serial.print("connecting to ");
- Serial.print("192.168.1.2");
- Serial.print(" at port ");
- Serial.print(port);
- 
- 
- if (client.connect(server, port))
- {
-  Serial.println("...connected");
- 
-  //client.println("smtp.seznam.cz 25");
-  //delay (wait);
- 
-  client.println("EHLO Arduino" );
-  delay(wait);
-
-  client.println("AUTH LOGIN " );
-  delay(wait);
-
-  client.println("cGV0ckBwZm9yeS5jeg==" );
-  delay(wait);
-  client.println("c3ZldHI=" );
-  delay(wait);
-
-    
-  client.println("MAIL FROM: <pfory@seznam.cz>");
-  delay(wait);
-
-  client.println("RCPT TO: <mr.datel@gmail.com>");
-  delay(wait);
-
-  client.println("DATA");
-  delay(wait);
+void setup() {
+  // start the Ethernet connection:
+  Ethernet.begin(mac, ip);
+ // Open serial communications and wait for port to open:
+  Serial.begin(9600);
+   while (!Serial) {
+    ; // wait for serial port to connect. Needed for Leonardo only
+  }
 
 
-  client.println("Please let me know it worked");
-  client.println(".");
+  // give the Ethernet shield a second to initialize:
+  delay(1000);
+  Serial.println("connecting...");
 
-  client.println("QUIT");
-  delay(wait);
-
-  
-  } else {
-    Serial.println("did not connect connection failed");
+  // if you get a connection, report back via serial:
+  if (client.connect(server, 10002)) {
+    Serial.println("connected");
+  } 
+  else {
+    // if you didn't get a connection to the server:
+    Serial.println("connection failed");
   }
 }
 
 void loop()
 {
- while (client.available()) {
-   char c = client.read();
-   Serial.print(c);
- }
- 
- if (!client.connected()) {
-   Serial.println();
-   Serial.println("disconnecting.");
-   client.stop();
-   for(;;)
-     ;
- }
+  // if there are incoming bytes available 
+  // from the server, read them and print them:
+  if (client.available()) {
+    char c = client.read();
+    Serial.print(c);
+  }
+
+  // as long as there are bytes in the serial queue,
+  // read them and send them out the socket if it's open:
+  while (Serial.available() > 0) {
+    char inChar = Serial.read();
+    if (client.connected()) {
+      client.print(inChar); 
+    }
+  }
+
+  // if the server's disconnected, stop the client:
+  if (!client.connected()) {
+    Serial.println();
+    Serial.println("disconnecting.");
+    client.stop();
+    // do nothing:
+    while(true);
+  }
 }
+
+
+
+

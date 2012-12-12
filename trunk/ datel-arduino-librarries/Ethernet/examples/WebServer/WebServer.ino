@@ -15,14 +15,14 @@
  
  */
 
-//#include <SPI.h>
+#include <SPI.h>
 #include <Ethernet.h>
 
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network:
 byte mac[] = { 
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEE };
-IPAddress ip(192,168,1, 60);
+  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress ip(192,168,1, 177);
 
 // Initialize the Ethernet server library
 // with the IP address and port you want to use 
@@ -98,3 +98,4 @@ void loop() {
     Serial.println("client disonnected");
   }
 }
+

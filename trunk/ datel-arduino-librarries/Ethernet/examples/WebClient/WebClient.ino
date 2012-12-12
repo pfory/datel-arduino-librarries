@@ -13,13 +13,13 @@
  
  */
 
-//#include <SPI.h>
+#include <SPI.h>
 #include <Ethernet.h>
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
-byte mac[] = {  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xEE };
-IPAddress server(173,194,39,163); // Google
+byte mac[] = {  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+IPAddress server(173,194,33,104); // Google
 
 // Initialize the Ethernet client library
 // with the IP address and port of the server 
